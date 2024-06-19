@@ -1,7 +1,21 @@
 import React from 'react';
 import img2 from '../img/iam.png';
+import { Link,useNavigate} from 'react-router-dom';
+import { useRecoilState } from "recoil";
+import { isLogin, username } from "./StAtom";
 
 const Profile1 = () => {
+  const [isLoginCheck, setIsLoginCheck] = useRecoilState(isLogin);
+  const [isu, setIsu] = useRecoilState(username);
+  const navigate = useNavigate()
+  const Logout2 = () => {
+    setIsLoginCheck(false);
+    setIsu("");
+    localStorage.removeItem("user");
+    localStorage.removeItem("username");
+    navigate("/")
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-between">
       <main className="profile-page w-full flex-grow flex flex-col items-center">
@@ -9,26 +23,26 @@ const Profile1 = () => {
           <div className="container mt-10 mx-auto px-4 flex justify-center">
             <div className="relative flex justify-center items-center min-w-0 break-words bg-white w-full md:w-4/5 mb-6 shadow-xl rounded-lg lg:mt-0 max-w-screen-lg">
               <div className="px-6">
-                <div className="py-6 px-3 sm:mt-0 flex justify-end items-end">
-                  <button className="bg-green-600 active:bg-green-800 uppercase text-white font-bold hover:shadow-md hover:bg-green-700 shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150" type="button">
+                <div className="py-6 px-3 flex justify-end">
+                  <button className="bg-green-700 active:bg-green-800 uppercase text-white font-bold hover:shadow-md hover:bg-green-900 shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150" type="button">
                     Connect
                   </button>
                 </div>
-                <div className="flex flex-wrap justify-center items-end">
+                <div className="flex flex-wrap justify-center items-end md:mr-2 lg:ml-3">
                   <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
-                    {/* Add additional content or components if needed */}
+                    {/* Additional content or components if needed */}
                   </div>
-                  <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right flex justify-center items-end lg:justify-end -mb-10 -mt-16">
-                    <div className="relative top-[0.125rem]">
+                  <div className="w-full lg:w-4/12 px-4 lg:order-3  lg:text-right flex justify-center items-end lg:justify-end -mb-10 -mt-16 sm:-mr-14 lg:-ml-10 md:-ml-16 ">
+                    <div className="relative ">
                       <img
                         alt="Profile"
                         src={img2}
-                        className="sm:mr-11 shadow-xl rounded-full h-32 w-32 md:h-48 md:w-48 sm:h-40 sm:w-40 align-middle border-none max-w-full -mt-40 md:ml-16 lg:mr-1"
+                        className="sm:mr-12 shadow-xl rounded-full h-32 w-32 md:h-48 md:w-48 sm:h-40 sm:w-40 align-middle border-none max-w-full -mt-40 md:ml-12 lg:mr-2 sm:-ml-6 mb-3"
                       />
                     </div>
                   </div>
-                  <div className="w-full md:ml-10 lg:w-4/12 px-4 lg:order-3 lg:text-right flex justify-center items-end lg:justify-end -mb-16 mt-4 lg:ml-4">
-                    <div className="flex justify-center items-end py-4 lg:pt-4 pt-8">
+                  <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right flex justify-center items-end lg:justify-end -mb-16 mt-4 lg:ml-20 md:-mr-14 ">
+                    <div className="flex justify-center items-end py-4 lg:pt-4 pt-8 sm:ml-6 -mt-4 md:mr-16">
                       <div className="mr-4 p-3 text-center">
                         <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">22</span><span className="text-sm text-blueGray-400">Friends</span>
                       </div>
@@ -66,7 +80,16 @@ const Profile1 = () => {
                         warm, intimate feel with a solid groove structure. An
                         artist of considerable range.
                       </p>
-                      <a href="#pablo" className="font-normal text-pink-500">Show more</a>
+                    </div>
+                  </div>
+                  <div className='flex-col justify-center'>
+                    <Link to="editprofile">
+                      <div className='-mt-2'>
+                        <a href="#" className="font-normal text-green-600 ">edit</a>
+                      </div>
+                    </Link>
+                    <div className='mt-6 -mb-6'>
+                      <button onClick={Logout2} className="border hover:border-green-600 px-4 py-2 rounded-lg shadow ring-1 ring-inset ring-gray-300">Logout</button>
                     </div>
                   </div>
                 </div>
@@ -79,8 +102,13 @@ const Profile1 = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap items-center md:justify-between justify-center">
             <div className="w-full md:w-6/12 px-4 mx-auto text-center">
-              <div className="text-sm text-blueGray-500 font-semibold py-1">
-                Made with <a href="https://www.creative-tim.com/product/notus-js" className="text-blueGray-500 hover:text-gray-800" target="_blank" rel="noopener noreferrer">Notus JS</a> by <a href="https://www.creative-tim.com" className="text-blueGray-500 hover:text-blueGray-800" target="_blank" rel="noopener noreferrer"> Creative Tim</a>.
+              <div className="flex-col justify-center text-sm text-blueGray-500 font-semibold py-1">
+                <div className='flex justify-center'>
+                  <img src='../img/logo.png' className='w-10 h-10 flex justify-center'></img>
+                </div>
+                <div>
+                  farmhany
+                </div>
               </div>
             </div>
           </div>

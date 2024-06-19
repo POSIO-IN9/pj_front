@@ -5,5 +5,5 @@ export const isLogin = atom({
 });
 export const username = atom({
     key : "username",
-    default : null
+    default : "",
 })

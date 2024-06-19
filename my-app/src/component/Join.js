@@ -17,7 +17,7 @@ export default function Join() {
   const [role, setRole] = useState('');
 
   // Step 3: 프로필 사진 설정
-  const [profilePicture, setProfilePicture] = useState(null); // 파일 객체 저장
+  const [profileImage, setProfileImg] = useState(null); // 파일 객체 저장
 
   // 단계 관리
   const [step, setStep] = useState(1);
@@ -57,38 +57,51 @@ export default function Join() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+     const formData = new FormData();
+    formData.append('memberDto', new Blob([JSON.stringify({
+      username,
+      password,
+      name,
+      email,
+      phone,
+      address,
+      role
+    })], { type: "application/json" }));
+
+
+    if (profileImage) {
+      const blob = new Blob([profileImage], { type: profileImage.type });
+      formData.append('profileImage', blob, profileImage.name);
+    }
+    console.log('FormData contents:');
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
     try {
-      const formData = new FormData();
-      formData.append('memberDto', JSON.stringify({
-        username,
-        password,
-        name,
-        email,
-        phone,
-        address
-      }));
-      formData.append('profilePicture', profilePicture);
-
-
       const response = await axios.post('http://localhost:8080/login/register', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
+
       console.log('Registration successful:', response.data);
       setStep(4);
     } catch (error) {
-      console.error('Error registering:', error);
+      if (error.response) {
+        // 서버로부터의 응답이 있을 경우
+        console.error('Error registering:', error.response.data);
+      } else if (error.request) {
+        // 요청이 서버에 전달되지 않았을 경우
+        console.error('Request failed:', error.request);
+      } else {
+        // 오류가 발생한 경우
+        console.error('Error registering:', error.message);
+      }
     }
   };
 
-  // 프로필 사진 변경 핸들러
-  const handleProfilePictureChange = (e) => {
-    const file = e.target.files[0];
-    console.log('Selected profile picture:', file);
-  };
-
-
+  
   return (
     <div className='flex items-center justify-center min-h-screen'>
       <div className='w-11/12 max-w-lg px-10 py-8 mx-auto bg-white border rounded-lg shadow-2xl'>
@@ -231,7 +244,7 @@ export default function Join() {
                   type="file"
                   id="profileImage"
                   className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 hover:ring-green-500 hover:border-green-500 w-full py-2.5 px-4"
-                  onChange={handleProfilePictureChange}
+                  onChange={(e) => setProfileImg(e.target.value)}
                 />
               </div>
               <button
