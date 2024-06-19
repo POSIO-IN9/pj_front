@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+
 export default function Join() {
   // Step 1: 사용자 이름과 비밀번호 입력
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [usernameExists, setUsernameExists] = useState(false); // 계정이 이미 있는지 여부
   const [usernameCheckMessage, setUsernameCheckMessage] = useState(''); // 사용자 이름 중복 체크 메시지
+  // const onFileChanges = (event) => console.log(event.target.files);
 
   // Step 2: 나머지 정보 및 역할(Role) 입력
   const [name, setName] = useState('');
@@ -18,6 +20,8 @@ export default function Join() {
 
   // Step 3: 프로필 사진 설정
   const [profileImage, setProfileImg] = useState(null); // 파일 객체 저장
+
+
 
   // 단계 관리
   const [step, setStep] = useState(1);
@@ -51,13 +55,22 @@ export default function Join() {
       }
     }
   };
+  // Step 2 폼 제출 핸들러
+  // const handleStep2Submit = (e) => {
+  //   e.preventDefault();
+  //   setStep(3);
+  // };
 
-
+  // 파일 선택 핸들러
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setProfileImg(file);
+  };
   // 전체 회원 가입 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-     const formData = new FormData();
+    const formData = new FormData();
     formData.append('memberDto', new Blob([JSON.stringify({
       username,
       password,
@@ -73,10 +86,10 @@ export default function Join() {
       const blob = new Blob([profileImage], { type: profileImage.type });
       formData.append('profileImage', blob, profileImage.name);
     }
-    console.log('FormData contents:');
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    // console.log('FormData contents:');
+    // for (let pair of formData.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
 
     try {
       const response = await axios.post('http://localhost:8080/login/register', formData, {
@@ -100,8 +113,9 @@ export default function Join() {
       }
     }
   };
+  //파일 타입알기-인코딩할때 필요
 
-  
+
   return (
     <div className='flex items-center justify-center min-h-screen'>
       <div className='w-11/12 max-w-lg px-10 py-8 mx-auto bg-white border rounded-lg shadow-2xl'>
@@ -243,8 +257,9 @@ export default function Join() {
                 <input
                   type="file"
                   id="profileImage"
+                  accept="image/png, image/jpeg, image/jpg"
                   className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 hover:ring-green-500 hover:border-green-500 w-full py-2.5 px-4"
-                  onChange={(e) => setProfileImg(e.target.value)}
+                  onChange={handleFileChange}
                 />
               </div>
               <button
@@ -256,10 +271,15 @@ export default function Join() {
               </div>
             </form>
           )}
+          {/* FetchUserInfo 컴포넌트를 통해 사용자 정보 가져오기 */}
+
           {/* 네 번째 단계 */}
           {(step === 4) && (
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-5">Registration Complete</h2>
+              <div className="mb-5">
+
+              </div>
               <p className="text-lg mb-5">{username}님 가입을 축하합니다!</p>
               <Link to="/" className="text-white bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-blue-300 font-medium rounded-lg text-sm py-2.5 px-5">
                 홈으로 가기

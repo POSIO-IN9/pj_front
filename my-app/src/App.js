@@ -8,7 +8,6 @@ import Join from './component/Join';
 import Gallery from './component/Gallery';
 import Main from './component/Main';
 import Information from './component/Information';
-import Logout from './component/Logout';
 import { RecoilRoot } from 'recoil';
 
 
@@ -29,7 +28,6 @@ function App() {
           <Route path='/join' element={<Join/>}/>
           <Route path='/gallery' element={<Gallery/>}/>
           <Route path='/info' element={<Information/>}/>
-          <Route path='/logout' element={<Logout/>}/>
         </Routes>
         
       </RecoilRoot>

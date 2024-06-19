@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { isLogin, username } from './StAtom';
+import { isLogin, username, profileImage } from './StAtom';
+import Useprofile from "./Useprofile";
 
 const NavLink = ({ to, className, children, onClick }) => (
     <Link to={to} className={className} onClick={onClick}>
@@ -12,26 +13,29 @@ const NavLink = ({ to, className, children, onClick }) => (
 const Nav = () => {
     const isLoggedIn = useRecoilValue(isLogin);
     const savedUsername = useRecoilValue(username);
+    const savedProfileImage = useRecoilValue(profileImage);
     const setIsLoggedIn = useSetRecoilState(isLogin);
     const setSavedUsername = useSetRecoilState(username);
+    const setProfileImg = useSetRecoilState(profileImage);
     const [isOpen, setIsOpen] = useState(false);
-    const [initialLoad, setInitialLoad] = useState(true); // 초기 로딩 상태 추가
+    const [initialLoad, setInitialLoad] = useState(true);
 
     useEffect(() => {
         const user = localStorage.getItem('user');
         const username = localStorage.getItem('username');
+        const userData = JSON.parse(localStorage.getItem('userData'));
         if (user && username) {
             setIsLoggedIn(true);
             setSavedUsername(username);
+            setProfileImg(userData?.profileImage || null);
         }
-        setInitialLoad(false); // 초기 로딩 상태 변경
-    }, [setIsLoggedIn, setSavedUsername]);
+        setInitialLoad(false);
+    }, [setIsLoggedIn, setSavedUsername, setProfileImg]);
 
     const handleToggleMenu = () => {
         setIsOpen(!isOpen);
     };
 
-    // 초기 로딩 상태에서는 아무 것도 렌더링하지 않음
     if (initialLoad) {
         return null;
     }
@@ -56,9 +60,19 @@ const Nav = () => {
                     {isLoggedIn ? (
                         <NavLink
                             to="/profile"
-                            className="font-neucha inline-block text-sm px-2 py-2 leading-none border rounded font-bold text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white lg:mt-0"
+                            className=""
                         >
-                            {savedUsername}
+                            {savedProfileImage ? (
+                                <div className='w-10 h-10 overflow-hidden rounded-full transform transition-transform duration-300 hover:scale-110'>
+                                     <Useprofile userdata={{ profileImage: savedProfileImage }} />
+                                </div>
+                               
+                            ) : (
+                                <div className='font-neucha inline-block text-sm px-2 py-2 leading-none border rounded font-bold text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white lg:mt-0 '>
+                                {savedUsername}
+                                </div>
+                                
+                            )}
                         </NavLink>
                     ) : (
                         <NavLink

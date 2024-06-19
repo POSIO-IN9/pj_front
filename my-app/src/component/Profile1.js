@@ -1,19 +1,32 @@
-import React from 'react';
-import img2 from '../img/iam.png';
-import { Link,useNavigate} from 'react-router-dom';
-import { useRecoilState } from "recoil";
-import { isLogin, username } from "./StAtom";
+import React, { useState } from 'react';
+import defaultimg from '../img/logo.png';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { isLogin, username, profileImage } from "./StAtom";
+import Useprofile from './Useprofile';
 
-const Profile1 = () => {
-  const [isLoginCheck, setIsLoginCheck] = useRecoilState(isLogin);
-  const [isu, setIsu] = useRecoilState(username);
+const Profile1 = ({userdata}) => {
+  
+
+  const savedUsername = useRecoilValue(username);
+  const savedProfileImage = useRecoilValue(profileImage);
+  const setIsLogedIn = useSetRecoilState(isLogin);
+  const setSavedUsername = useSetRecoilState(username);
+  const setProfileImg = useSetRecoilState(profileImage);
   const navigate = useNavigate()
   const Logout2 = () => {
-    setIsLoginCheck(false);
-    setIsu("");
-    localStorage.removeItem("user");
-    localStorage.removeItem("username");
+    localStorage.removeItem('user');
+    localStorage.removeItem('userData');
+    localStorage.removeItem('token');
+    setIsLogedIn(false);
+    setSavedUsername(null);
+    setProfileImg(null);
     navigate("/")
+  };
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleHover = () => {
+    setIsHovered(!isHovered);
   };
 
   return (
@@ -33,17 +46,37 @@ const Profile1 = () => {
                     {/* Additional content or components if needed */}
                   </div>
                   <div className="w-full lg:w-4/12 px-4 lg:order-3  lg:text-right flex justify-center items-end lg:justify-end -mb-10 -mt-16 sm:-mr-14 lg:-ml-10 md:-ml-16 ">
-                    <div className="relative ">
-                      <img
-                        alt="Profile"
-                        src={img2}
-                        className="sm:mr-12 shadow-xl rounded-full h-32 w-32 md:h-48 md:w-48 sm:h-40 sm:w-40 align-middle border-none max-w-full -mt-40 md:ml-12 lg:mr-2 sm:-ml-6 mb-3"
-                      />
+                    <div className="relative md:-ml-10" style={{ width: 'fit-content' }}>
+                      <div className={`relative ${isHovered ? 'hovered' : ''}`} onMouseEnter={handleHover} onMouseLeave={handleHover}>
+                        <div
+                          className="relative border overflow-hidden rounded-3xl drop-shadow-md h-32 w-32 md:h-48 md:w-48 sm:h-40 sm:w-40 align-middle border-none max-w-full -mt-40 md:ml-12 lg:-mr-8 sm:-ml-6 mb-3"
+                          style={{
+                            transition: 'transform 0.3s ease',
+                            transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+                          }}
+                        >
+                          {savedProfileImage ? (
+                            <div>
+                            <Useprofile userdata={{ profileImage: savedProfileImage }} />
+                            </div>
+                          ) : (
+                            <img
+                              alt="Profile"
+                              src={defaultimg}
+                              className="h-full w-full object-cover rounded-3xl"
+                            />
+                          )}
+                          <div
+                            className="absolute top-0 left-0 w-full h-full border-green-400 border-opacity-10 rounded-3xl"
+                            style={{ transition: 'opacity 0.3s ease', opacity: isHovered ? '1' : '0' }}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right flex justify-center items-end lg:justify-end -mb-16 mt-4 lg:ml-20 md:-mr-14 ">
-                    <div className="flex justify-center items-end py-4 lg:pt-4 pt-8 sm:ml-6 -mt-4 md:mr-16">
-                      <div className="mr-4 p-3 text-center">
+                  <div className="relative w-full lg:w-4/12 px-4 lg:order-3 lg:text-right flex justify-center items-end lg:justify-end -mb-16 mt-4 lg:ml-40 md:-mr-14 sm:-mr-1 ">
+                    <div className=" flex justify-end items-end py-4 lg:pt-4 pt-8 sm:ml-6 -mt-4 md:mr-16 sm:-mr-2">
+                      <div className=" mr-4 p-3 text-center">
                         <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">22</span><span className="text-sm text-blueGray-400">Friends</span>
                       </div>
                       <div className="mr-4 p-3 text-center">
@@ -57,11 +90,11 @@ const Profile1 = () => {
                 </div>
                 <div className="text-center mt-12">
                   <h3 className="text-4xl font-semibold leading-normal m-2 text-blueGray-700 mb-2">
-                    Jenna Stones
+                    {savedUsername}
                   </h3>
                   <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                     <i className="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
-                    Los Angeles, California
+                    {userdata.Address}
                   </div>
                   <div className="mb-2 text-blueGray-600 mt-10">
                     <i className="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>Solution Manager - Creative Tim Officer
